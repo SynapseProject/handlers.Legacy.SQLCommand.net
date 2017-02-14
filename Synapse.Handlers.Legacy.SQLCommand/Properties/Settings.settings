@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Synapse.Handlers.Legacy.SQLCommand.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PassPhrase" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">123456789012345</Value>
+    </Setting>
+    <Setting Name="InitVector" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">1234567890123456</Value>
+    </Setting>
+    <Setting Name="SaltValue" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">12345678</Value>
+    </Setting>
+    <Setting Name="DefaultRunAsDomain" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">DOMAIN_42</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
