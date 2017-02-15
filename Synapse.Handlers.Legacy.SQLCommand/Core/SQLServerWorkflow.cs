@@ -15,7 +15,7 @@ namespace Synapse.Handlers.Legacy.SQLCommand
 		{
 		}
 
-        public override void RunMainWorkflow()
+        public override void RunMainWorkflow(bool isDryRun)
         {
             OnStepProgress("RunMainWorkflow", "Starting Main SQLServer Workflow");
 
@@ -30,7 +30,7 @@ namespace Synapse.Handlers.Legacy.SQLCommand
             }
 
             SqlConnection con = BuildConnection();
-            DbDataReader reader = ExecuteCommand(con, commandText, isStoredProc);
+            DbDataReader reader = ExecuteCommand(con, commandText, isStoredProc, isDryRun);
             ParseResults(reader);
 
             con.Close();

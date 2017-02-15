@@ -19,7 +19,7 @@ namespace Synapse.Handlers.Legacy.SQLCommand
 		{
 		}
 
-        public override void RunMainWorkflow()
+        public override void RunMainWorkflow(bool isDryRun)
         {
             String commandText = "";
             bool isStoredProc = false;
@@ -33,7 +33,7 @@ namespace Synapse.Handlers.Legacy.SQLCommand
             }
 
             OracleConnection con = BuildConnection();
-            DbDataReader reader = ExecuteCommand(con, commandText, isStoredProc);
+            DbDataReader reader = ExecuteCommand(con, commandText, isStoredProc, isDryRun);
             ParseResults(reader);
 
             con.Close();

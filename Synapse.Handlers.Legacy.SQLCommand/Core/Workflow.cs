@@ -32,7 +32,7 @@ namespace Synapse.Handlers.Legacy.SQLCommand
 
 		public WorkflowParameters Parameters { get { return _wfp; } set { _wfp = value as WorkflowParameters; } }
 
-		public void ExecuteAction()
+		public void ExecuteAction(bool isDryRun)
 		{
 			string context = "ExecuteAction";
 
@@ -53,7 +53,7 @@ namespace Synapse.Handlers.Legacy.SQLCommand
 
                 if (isValid)
                 {
-                    RunMainWorkflow();
+                    RunMainWorkflow(isDryRun);
                 }
                 else
                 {
@@ -73,7 +73,7 @@ namespace Synapse.Handlers.Legacy.SQLCommand
 
         }
 
-        public virtual void RunMainWorkflow()
+        public virtual void RunMainWorkflow(bool isDryRun)
         {
             OnStepProgress("RunMainWorkflow", @"Unable to determine database type.  Please specify Oracle or SQLServer.");
         }
@@ -94,7 +94,7 @@ namespace Synapse.Handlers.Legacy.SQLCommand
             return _wfp.IsValid;
         }
 
-        protected DbDataReader ExecuteCommand(DbConnection con, String cmdText, bool isStoredProc=false)
+        protected DbDataReader ExecuteCommand(DbConnection con, String cmdText, bool isStoredProc=false, bool isDryRun=false)
         {
             bool useImpersonation = false;
             Impersonator user = null;
@@ -106,6 +106,7 @@ namespace Synapse.Handlers.Legacy.SQLCommand
                 user = new Impersonator(config.Default.DefaultRunAsDomain, _wfp.RunAsUser, password);
                 user.StartImpersonation();
                 useImpersonation = true;
+                OnStepProgress("ExecuteQuery", "Running As User [" + config.Default.DefaultRunAsDomain + @"\" +_wfp.RunAsUser + "]");
             }
 
             DbCommand command = BuildCommand(con, cmdText);
@@ -154,19 +155,28 @@ namespace Synapse.Handlers.Legacy.SQLCommand
             try
             {
                 con.Open();
-                if (isStoredProc && (this.GetType() == typeof(OracleWorkflow)))
+                if (isDryRun)
                 {
-                    command.ExecuteNonQuery();
+                    OnStepProgress("ExecuteQuery", "Database connection was sucessful.");
+                    OnStepProgress("ExecuteQuery", "IsDryRun flag is set.  Query or StoredProcedure will not be executed.");
+                    con.Close();
                 }
                 else
                 {
-                    reader = command.ExecuteReader();
-                }
+                    if (isStoredProc && (this.GetType() == typeof(OracleWorkflow)))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        reader = command.ExecuteReader();
+                    }
 
-                // Log Any Output Parameters From Call
-                foreach (DbParameter parameter in command.Parameters)
-                {
-                    ParseParameter(parameter);
+                    // Log Any Output Parameters From Call
+                    foreach (DbParameter parameter in command.Parameters)
+                    {
+                        ParseParameter(parameter);
+                    }
                 }
             }
             catch (Exception e)
