@@ -22,6 +22,8 @@ namespace Synapse.Handlers.Legacy.SQLCommand
         [XmlElement]
         public SQLServerType SQLServer;
         [XmlElement]
+        public String RunAsDomain;
+        [XmlElement]
         public String RunAsUser;
         [XmlElement]
         public String RunAsPassword;
@@ -89,6 +91,7 @@ namespace Synapse.Handlers.Legacy.SQLCommand
             sb.AppendLine(">> SQLCommand");
             sb.AppendLine("   >> Query         : " + this.Query);
             sb.AppendLine("   >> StoredProc    : " + this.StoredProcedure);
+            sb.AppendLine("   >> RunAsDomain   : " + this.RunAsDomain);
             sb.AppendLine("   >> RunAsUser     : " + this.RunAsUser);
             sb.AppendLine("   >> RunAsPassword : " + this.RunAsPassword);
             if (this.Oracle != null)

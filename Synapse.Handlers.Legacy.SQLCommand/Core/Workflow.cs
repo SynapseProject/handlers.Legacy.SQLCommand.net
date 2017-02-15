@@ -102,11 +102,15 @@ namespace Synapse.Handlers.Legacy.SQLCommand
             if (!String.IsNullOrWhiteSpace(_wfp.RunAsUser))
             {
                 String password = DecryptPassword(_wfp.RunAsPassword);
+                String domain = _wfp.RunAsDomain;
+                if (String.IsNullOrWhiteSpace(domain))
+                    domain = config.Default.DefaultRunAsDomain;
 
-                user = new Impersonator(config.Default.DefaultRunAsDomain, _wfp.RunAsUser, password);
+                OnStepProgress("ExecuteQuery", "Attempting To Run As User [" + domain + @"\" + _wfp.RunAsUser + "]");
+                user = new Impersonator(domain, _wfp.RunAsUser, password);
                 user.StartImpersonation();
                 useImpersonation = true;
-                OnStepProgress("ExecuteQuery", "Running As User [" + config.Default.DefaultRunAsDomain + @"\" +_wfp.RunAsUser + "]");
+                OnStepProgress("ExecuteQuery", "Running As User [" + domain + @"\" +_wfp.RunAsUser + "]");
             }
 
             DbCommand command = BuildCommand(con, cmdText);
