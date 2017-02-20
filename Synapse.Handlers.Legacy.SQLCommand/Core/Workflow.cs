@@ -390,11 +390,6 @@ namespace Synapse.Handlers.Legacy.SQLCommand
         #region NotifyProgress Events
 		int _cheapSequence = 0;
 
-		void p_StepProgress(object sender, AdapterProgressEventArgs e)
-		{
-            OnProgress(e.Context, e.Message, StatusType.Running, 0, _cheapSequence++, false, e.Exception);
-		}
-
 		/// <summary>
 		/// Notify of step beginning. If return value is True, then cancel operation.
 		/// Defaults: PackageStatus.Running, Id = _cheapSequence++, Severity = 0, Exception = null.
