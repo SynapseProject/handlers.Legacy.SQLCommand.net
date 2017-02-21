@@ -58,7 +58,13 @@ namespace Synapse.Handlers.Legacy.SQLCommand
 			return string.Format( "{1}  {0}  {1}", header, _lines );
 		}
 
-		public static string Decrypt(string value)
+        public static string CompressXml(string xml)
+        {
+            string str = Regex.Replace(xml, @"(>\s*<)", @"><");
+            return str;
+        }
+
+        public static string Decrypt(string value)
 		{
 			Cipher c = new Cipher( config.Default.PassPhrase, config.Default.SaltValue, config.Default.InitVector );
 			return c.Decrypt( value );
