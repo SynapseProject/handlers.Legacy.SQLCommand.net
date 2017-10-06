@@ -39,4 +39,44 @@ public class SQLCommandHandler : HandlerRuntimeBase
 
         return new ExecuteResult() { Status = StatusType.Complete };
     }
+
+    public override object GetConfigInstance()
+    {
+        return null;
+    }
+
+    public override object GetParametersInstance()
+    {
+        WorkflowParameters wfp = new WorkflowParameters();
+
+        wfp.Oracle = new OracleType();
+        wfp.Oracle.User = "scott";
+        wfp.Oracle.Password = "tiger";
+        wfp.Oracle.DataSource = @"(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))(CONNECT_DATA =(SERVER = DEDICATED)(SERVICE_NAME = XE)))";
+
+        wfp.SQLServer = new SQLServerType();
+        wfp.SQLServer.ConnectionTimeout = 30;
+        wfp.SQLServer.Database = "SANDBOX";
+        wfp.SQLServer.DataSource = @"Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;";
+        wfp.SQLServer.IntegratedSecurity = true;
+        wfp.SQLServer.Password = "MyPassword";
+        wfp.SQLServer.TrustedConnection = true;
+        wfp.SQLServer.User = "MyUserName";
+
+        wfp.Query = "SELECT * from USERS where NAME = @userName";
+        wfp.StoredProcedure = "dbo.uspGetUsers";
+
+        wfp.Parameters = new List<ParameterType>();
+        ParameterType param = new ParameterType();
+        param.Name = "userName";
+        param.Value = "Bill Gates";
+        param.Direction = System.Data.ParameterDirection.Input;
+        param.Type = SqlParamterTypes.String;
+        wfp.Parameters.Add( param );
+
+        String xml = wfp.Serialize( false );
+        xml = xml.Substring( xml.IndexOf( "<" ) );
+        return xml;
+
+    }
 }
